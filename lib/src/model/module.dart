@@ -1,8 +1,8 @@
 import 'route.dart';
 
-abstract class RouterModule {
-  String get path;
+abstract class Module {
+  String get name;
   bool get allowAnonymous => false;
   List<ModuleRoute> get routes;
-  List<RouterModule> get modules => [];
+  List<Module> get modules => [];
 }

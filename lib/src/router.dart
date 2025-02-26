@@ -1,5 +1,6 @@
 import 'dart:io' show Platform;
 
+// ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,13 +14,11 @@ import 'page_route/material.dart';
 import 'views/unauthorized_route.dart';
 import 'views/unknown_route.dart';
 
-mixin ModuleRouterMixin {
-  List<RouterModule> get modules;
+mixin ModularRouterMixin {
+  List<Module> get modules;
   bool get enableAuthorize => false;
   bool get authorized => false;
   String get unauthorizedRedirectRoute => '';
-
-  //void listener(RouterModule module) {}
 
   Route<T> onGenerateRoute<T>(RouteSettings routeSettings) {
     if (routeSettings.name?.isNotEmpty != true) {
@@ -37,10 +36,6 @@ mixin ModuleRouterMixin {
       if (this.enableAuthorize && !(this.authorized || module.allowAnonymous || route.allowAnonymous)) {
         throw UnauthorizedRouteException();
       }
-
-      //listener(module);
-
-      //final view = route.builder(routeSettings.arguments);
 
       final pageRoute = _pageRouter<T>(route, routeSettings);
 
@@ -60,12 +55,12 @@ mixin ModuleRouterMixin {
     }
   }
 
-  RouterModule _module(String path, List<RouterModule> modules) {
+  Module _module(String path, List<Module> modules) {
     final splitedPath = path.split("/");
     splitedPath.removeWhere((value) => value == '');
 
     final module = modules.firstWhereOrNull(
-      (module) => module.path == splitedPath.first,
+      (module) => module.name == splitedPath.first,
     );
 
     if (module == null) {
@@ -86,7 +81,7 @@ mixin ModuleRouterMixin {
     return _module(nextPath, module.modules);
   }
 
-  ModuleRoute _route(RouteSettings routeSettings, RouterModule module) {
+  ModuleRoute _route(RouteSettings routeSettings, Module module) {
     String path = routeSettings.name!;
     final splitedPath = path.split("/");
     splitedPath.removeWhere((value) => value == '');
@@ -148,4 +143,4 @@ mixin ModuleRouterMixin {
   }
 }
 
-abstract class ModuleRouter with ModuleRouterMixin {}
+abstract class ModularRouter with ModularRouterMixin {}
