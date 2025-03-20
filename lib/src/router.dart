@@ -15,7 +15,7 @@ import 'views/unauthorized_route.dart';
 import 'views/unknown_route.dart';
 
 mixin ModularRouterMixin {
-  List<Module> get modules;
+  List<RouterModule> get modules;
   bool get enableAuthorize => false;
   bool get authorized => false;
   String get unauthorizedRedirectRoute => '';
@@ -55,7 +55,7 @@ mixin ModularRouterMixin {
     }
   }
 
-  Module _module(String path, List<Module> modules) {
+  RouterModule _module(String path, List<RouterModule> modules) {
     final splitedPath = path.split("/");
     splitedPath.removeWhere((value) => value == '');
 
@@ -81,7 +81,7 @@ mixin ModularRouterMixin {
     return _module(nextPath, module.modules);
   }
 
-  ModuleRoute _route(RouteSettings routeSettings, Module module) {
+  ModuleRoute _route(RouteSettings routeSettings, RouterModule module) {
     String path = routeSettings.name!;
     final splitedPath = path.split("/");
     splitedPath.removeWhere((value) => value == '');
