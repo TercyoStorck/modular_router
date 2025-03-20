@@ -1,5 +1,3 @@
-import 'package:flutter/widgets.dart';
-
 import 'route.dart';
 
 abstract class RouterModule {
@@ -21,6 +19,5 @@ abstract class RouterModule {
   List<ModuleRoute> get routes;
   List<RouterModule> get modules => [];
 
-  @protected
   static Map<Type, String> get routeTo => _routePaths;
 }
