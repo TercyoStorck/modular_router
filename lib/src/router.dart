@@ -61,7 +61,7 @@ mixin ModularRouterMixin {
     splitedPath.removeWhere((value) => value == '');
 
     final module = modules.firstWhereOrNull(
-      (module) => module.name == splitedPath.first,
+      (module) => module.name == splitedPath.first || module.name == '/${splitedPath.first}',
     );
 
     if (module == null) {
@@ -92,7 +92,7 @@ mixin ModularRouterMixin {
     }
 
     final route = module.routes.firstWhereOrNull(
-      (route) => route.path == splitedPath.last,
+      (route) => route.path == splitedPath.last || route.path == '/${splitedPath.last}',
     );
 
     if (route == null) {
