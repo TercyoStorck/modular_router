@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'dynamic_contructor.dart';
 import 'exception.dart';
 import 'model/module.dart';
 import 'model/route.dart';
@@ -102,13 +103,13 @@ mixin ModularRouterMixin {
   }
 
   PageRoute<T> _pageRouter<T>(ModuleRoute route, RouteSettings? routeSettings) {
-    final view = route.builder(routeSettings?.arguments);
+    final view = DynamicConstructor<Widget>(route.builder, routeSettings?.arguments); //route.builder(routeSettings?.arguments);
 
     if (Platform.isAndroid) {
       return CustomMaterialRoute<T>(
         fullscreenDialog: route.isFullscreenDialog,
         settings: routeSettings,
-        builder: (BuildContext context) => view,
+        builder: (BuildContext context) => view.instance,
       );
     }
 
@@ -116,28 +117,28 @@ mixin ModularRouterMixin {
       return CustomCupertinoRoute<T>(
         fullscreenDialog: route.isFullscreenDialog,
         settings: routeSettings,
-        builder: (BuildContext context) => view,
+        builder: (BuildContext context) => view.instance,
       );
     }
 
     return CustomPageRoute<T>(
       settings: routeSettings,
       fullscreenDialog: route.isFullscreenDialog,
-      pageBuilder: (BuildContext context, a1, a2) => view,
+      pageBuilder: (BuildContext context, a1, a2) => view.instance,
     );
   }
 
   PageRoute<T> _unauthorizedPageRoute<T>() {
     const view = UnauthorizedRoute();
     final unauthorizedRouteSettings = RouteSettings(name: this.unauthorizedRedirectRoute);
-    final route = ModuleRoute(builder: (args) => view, path: '');
+    final route = ModuleRoute(builder: () => view, path: '');
 
     return _pageRouter<T>(route, unauthorizedRouteSettings);
   }
 
   PageRoute<T> _unknownPageRoute<T>(RouteSettings routeSettings) {
     final view = UnknownRoute(routeName: routeSettings.name);
-    final route = ModuleRoute(builder: (args) => view, path: '');
+    final route = ModuleRoute(builder: () => view, path: '');
 
     return _pageRouter<T>(route, null);
   }

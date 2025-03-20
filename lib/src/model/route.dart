@@ -1,10 +1,12 @@
 import 'package:flutter/widgets.dart';
 
-class ModuleRoute {
+class ModuleRoute<T> {
   final String path;
   final bool allowAnonymous;
   final bool isFullscreenDialog;
-  final Widget Function(dynamic args) builder;
+  final Widget Function() builder;
+
+  Type get type => T;
 
   ModuleRoute({
     required this.path,
