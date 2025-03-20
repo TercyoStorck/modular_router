@@ -131,14 +131,14 @@ mixin ModularRouterMixin {
   PageRoute<T> _unauthorizedPageRoute<T>() {
     const view = UnauthorizedRoute();
     final unauthorizedRouteSettings = RouteSettings(name: this.unauthorizedRedirectRoute);
-    final route = ModuleRoute(builder: () => view, path: '');
+    final route = ModuleRoute<UnauthorizedRoute>(builder: () => view, path: '');
 
     return _pageRouter<T>(route, unauthorizedRouteSettings);
   }
 
   PageRoute<T> _unknownPageRoute<T>(RouteSettings routeSettings) {
     final view = UnknownRoute(routeName: routeSettings.name);
-    final route = ModuleRoute(builder: () => view, path: '');
+    final route = ModuleRoute<UnknownRoute>(builder: () => view, path: '');
 
     return _pageRouter<T>(route, null);
   }

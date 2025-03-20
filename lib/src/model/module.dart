@@ -10,7 +10,7 @@ abstract class RouterModule {
     bool allowAnonymous = false,
   })  : _name = name,
         _allowAnonymous = allowAnonymous {
-    RouterModule._routePaths.addAll({for (var route in routes) route.type: '$_name/${route.path}'});
+    RouterModule._routePaths.addAll({for (var route in routes) route.type: '$_name${route.path}'});
   }
 
   String get name => _name;
