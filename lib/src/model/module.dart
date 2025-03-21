@@ -19,5 +19,5 @@ abstract class RouterModule {
   List<ModuleRoute> get routes;
   List<RouterModule> get modules => [];
 
-  static Map<Type, String> get routeTo => _routePaths;
+  static Map<Type, dynamic> get routeTo => _routePaths;
 }
