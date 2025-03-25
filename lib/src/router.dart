@@ -1,5 +1,6 @@
 import 'dart:io' show Platform;
 
+// ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -101,40 +102,30 @@ mixin ModularRouterMixin {
     return route;
   }
 
-  Map<Type, PageRoute> views = {};
-
   PageRoute<T> _pageRouter<T>(ModuleRoute route, RouteSettings? routeSettings) {
-    final view = DynamicConstructor<Widget>(route.builder, routeSettings?.arguments).instance;
-
-    late final PageRoute pageRoute;
+    final view = DynamicConstructor<Widget>(route.builder, routeSettings?.arguments);
 
     if (Platform.isAndroid) {
-      pageRoute = CustomMaterialRoute<T>(
+      return CustomMaterialRoute<T>(
         fullscreenDialog: route.isFullscreenDialog,
         settings: routeSettings,
-        builder: (BuildContext context) => view,
+        builder: (BuildContext context) => view.instance,
       );
     }
 
     if (Platform.isIOS && !route.isFullscreenDialog) {
-      pageRoute = CustomCupertinoRoute<T>(
+      return CustomCupertinoRoute<T>(
         fullscreenDialog: route.isFullscreenDialog,
         settings: routeSettings,
-        builder: (BuildContext context) => view,
+        builder: (BuildContext context) => view.instance,
       );
     }
 
-    pageRoute = CustomPageRoute<T>(
+    return CustomPageRoute<T>(
       settings: routeSettings,
       fullscreenDialog: route.isFullscreenDialog,
-      pageBuilder: (BuildContext context, a1, a2) => view,
+      pageBuilder: (BuildContext context, a1, a2) => view.instance,
     );
-
-    if (route.keepAlive) {
-      views.putIfAbsent(route.type, () => pageRoute,);
-    }
-
-    return pageRoute as PageRoute<T>;
   }
 
   PageRoute<T> _unauthorizedPageRoute<T>() {
