@@ -101,13 +101,13 @@ mixin ModularRouterMixin {
     return route;
   }
 
-  Map<Type, dynamic> views = {};
+  Map<Type, Widget> views = {};
 
   PageRoute<T> _pageRouter<T>(ModuleRoute route, RouteSettings? routeSettings) {
     final view = views[route.type] ?? DynamicConstructor<Widget>(route.builder, routeSettings?.arguments).instance;
 
     if (route.keepAlive) {
-      views.putIfAbsent(route.type, view);
+      views.putIfAbsent(route.type, () => view,);
     }
 
     if (Platform.isAndroid) {
@@ -129,7 +129,7 @@ mixin ModularRouterMixin {
     return CustomPageRoute<T>(
       settings: routeSettings,
       fullscreenDialog: route.isFullscreenDialog,
-      pageBuilder: (BuildContext context, a1, a2) => view.instance,
+      pageBuilder: (BuildContext context, a1, a2) => view,
     );
   }
 
