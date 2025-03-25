@@ -101,17 +101,15 @@ mixin ModularRouterMixin {
     return route;
   }
 
-  Map<Type, Widget> views = {};
+  Map<Type, PageRoute> views = {};
 
   PageRoute<T> _pageRouter<T>(ModuleRoute route, RouteSettings? routeSettings) {
-    final view = views[route.type] ?? DynamicConstructor<Widget>(route.builder, routeSettings?.arguments).instance;
+    final view = DynamicConstructor<Widget>(route.builder, routeSettings?.arguments).instance;
 
-    if (route.keepAlive) {
-      views.putIfAbsent(route.type, () => view,);
-    }
+    late final PageRoute pageRoute;
 
     if (Platform.isAndroid) {
-      return CustomMaterialRoute<T>(
+      pageRoute = CustomMaterialRoute<T>(
         fullscreenDialog: route.isFullscreenDialog,
         settings: routeSettings,
         builder: (BuildContext context) => view,
@@ -119,18 +117,24 @@ mixin ModularRouterMixin {
     }
 
     if (Platform.isIOS && !route.isFullscreenDialog) {
-      return CustomCupertinoRoute<T>(
+      pageRoute = CustomCupertinoRoute<T>(
         fullscreenDialog: route.isFullscreenDialog,
         settings: routeSettings,
         builder: (BuildContext context) => view,
       );
     }
 
-    return CustomPageRoute<T>(
+    pageRoute = CustomPageRoute<T>(
       settings: routeSettings,
       fullscreenDialog: route.isFullscreenDialog,
       pageBuilder: (BuildContext context, a1, a2) => view,
     );
+
+    if (route.keepAlive) {
+      views.putIfAbsent(route.type, () => pageRoute,);
+    }
+
+    return pageRoute as PageRoute<T>;
   }
 
   PageRoute<T> _unauthorizedPageRoute<T>() {
