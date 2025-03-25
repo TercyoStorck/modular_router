@@ -5,6 +5,7 @@ class ModuleRoute<T> {
   final bool allowAnonymous;
   final bool isFullscreenDialog;
   final Widget Function() builder;
+  final bool keepAlive;
 
   Type get type => T;
 
@@ -13,5 +14,6 @@ class ModuleRoute<T> {
     this.allowAnonymous = false,
     this.isFullscreenDialog = false,
     required this.builder,
+    this.keepAlive = false,
   });
 }

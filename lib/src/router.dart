@@ -1,6 +1,5 @@
 import 'dart:io' show Platform;
 
-// ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -102,14 +101,20 @@ mixin ModularRouterMixin {
     return route;
   }
 
+  Map<Type, dynamic> views = {};
+
   PageRoute<T> _pageRouter<T>(ModuleRoute route, RouteSettings? routeSettings) {
-    final view = DynamicConstructor<Widget>(route.builder, routeSettings?.arguments); //route.builder(routeSettings?.arguments);
+    final view = views[route.type] ?? DynamicConstructor<Widget>(route.builder, routeSettings?.arguments).instance;
+
+    if (route.keepAlive) {
+      views.putIfAbsent(route.type, view);
+    }
 
     if (Platform.isAndroid) {
       return CustomMaterialRoute<T>(
         fullscreenDialog: route.isFullscreenDialog,
         settings: routeSettings,
-        builder: (BuildContext context) => view.instance,
+        builder: (BuildContext context) => view,
       );
     }
 
@@ -117,7 +122,7 @@ mixin ModularRouterMixin {
       return CustomCupertinoRoute<T>(
         fullscreenDialog: route.isFullscreenDialog,
         settings: routeSettings,
-        builder: (BuildContext context) => view.instance,
+        builder: (BuildContext context) => view,
       );
     }
 
