@@ -1,23 +1,18 @@
 import 'route.dart';
 
-abstract class RouterModule {
-  final String _name;
+abstract class Module {
+  final String _path;
   final bool _allowAnonymous;
-  static final Map<Type, String> _routePaths = {};
 
-  RouterModule({
-    required String name,
+  Module({
+    required String path,
     bool allowAnonymous = false,
-  })  : _name = name,
-        _allowAnonymous = allowAnonymous {
-    RouterModule._routePaths.addAll({for (var route in routes) route.type: '$_name${route.path}'});
-  }
+  }) : _path = path,
+       _allowAnonymous = allowAnonymous;
 
-  String get name => _name;
+  String get name => _path;
   bool get allowAnonymous => _allowAnonymous;
 
   List<ModuleRoute> get routes;
-  List<RouterModule> get modules => [];
-
-  static Map<Type, dynamic> get routeTo => _routePaths;
+  List<Module> get modules => [];
 }

@@ -16,7 +16,7 @@ class CustomPageRoute<T> extends PageRouteBuilder<T> {
         opacity: animation,
         child: Container(
           padding: const EdgeInsets.all(8.0),
-          color: Colors.black.withOpacity(.6),
+          color: Colors.black.withValues(alpha: .6),
           child: SlideTransition(
             position: Tween<Offset>(
               begin: const Offset(0, 1),
@@ -27,8 +27,6 @@ class CustomPageRoute<T> extends PageRouteBuilder<T> {
         ),
       );
     }
-
-    //return FadeTransition(opacity: animation, child: view);
 
     return view;
   }

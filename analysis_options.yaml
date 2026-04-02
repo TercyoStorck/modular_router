@@ -4,3 +4,9 @@ linter:
   rules:
     unnecessary_this: false
     use_key_in_widget_constructors: false
+    avoid_renaming_method_parameters: false
+    prefer_const_constructors: true
+    prefer_const_declarations: true
+    prefer_const_literals_to_create_immutables: true
+formatter:
+  trailing_commas: preserve

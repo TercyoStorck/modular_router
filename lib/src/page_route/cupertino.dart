@@ -18,7 +18,7 @@ class CustomCupertinoRoute<T> extends PageRoute<T> with CupertinoRouteTransition
     if (super.fullscreenDialog) {
       return Container(
         padding: const EdgeInsets.all(8.0),
-        color: Colors.black.withOpacity(.6),
+        color: Colors.black.withValues(alpha: .6),
         child: SafeArea(child: view),
       );
     }

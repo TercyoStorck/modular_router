@@ -1,18 +1,19 @@
 name: modular_router
 description: "A flutter package to manage routes"
-version: 1.0.0
+version: 2.0.0
 homepage: https://github.com/TercyoStorck/modular_router
-
 environment:
-  sdk: ^3.5.4
+  sdk: ^3.10.0
   flutter: ">=1.17.0"
-
 dependencies:
   flutter:
     sdk: flutter
   collection:
-
+  dynamic_constructor: ^1.0.0
+  stateful_widget_binder: ^1.0.2
+  auto_injector: ^2.1.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^6.0.0
+flutter:
