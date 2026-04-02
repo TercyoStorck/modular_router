@@ -105,6 +105,10 @@ mixin ModularRouterMixin {
   PageRoute<T> _pageRouter<T>(ModuleRoute route, RouteSettings? routeSettings) {
     final view = DynamicConstructor<Widget>(route.builder, routeSettings?.arguments);
 
+    if (route.customPageTransition != null) {
+      return route.customPageTransition!<T>(settings: routeSettings, view: view.instance);
+    }
+
     if (Platform.isAndroid) {
       return CustomMaterialRoute<T>(
         fullscreenDialog: route.isFullscreenDialog,

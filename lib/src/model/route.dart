@@ -6,6 +6,7 @@ class ModuleRoute<T> {
   final bool isFullscreenDialog;
   final Widget Function() builder;
   final bool keepAlive;
+  final PageTransitionBuilder? customPageTransition;
 
   Type get type => T;
 
@@ -15,5 +16,9 @@ class ModuleRoute<T> {
     this.isFullscreenDialog = false,
     required this.builder,
     this.keepAlive = false,
+    this.customPageTransition,
   });
+  
 }
+
+typedef PageTransitionBuilder = PageRoute<T> Function<T>({RouteSettings? settings, required Widget view});
