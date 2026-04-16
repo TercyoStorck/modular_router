@@ -1,7 +1,7 @@
 # Modular Router 🚀
 
 [![Pub Version](https://img.shields.io/pub/v/modular_router?style=flat-square&color=blue)](https://pub.dev/packages/modular_router)
-[![License](https://img.shields.io/github/license/TercyoStorck/modular_router?style=flat-square)](https://github.com/TercyoStorck/modular_router/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/TercyoStorck/modular_router/blob/master/LICENSE)
 [![Flutter](https://img.shields.io/badge/flutter-sdk-blue.svg?style=flat-square&logo=flutter)](https://flutter.dev)
 
 A powerful, modular, and type-safe routing solution for Flutter applications. Manage complex navigation structures, dependency injection, and authorization with ease.
@@ -264,4 +264,4 @@ Check out the [example](example/lib/main.dart) project for a complete demonstrat
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU GPL v3 License - see the [LICENSE](LICENSE) file for details.
