@@ -6,17 +6,26 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final router = ModularRouter(
+    modules: [MainModule()],
+    authorized: true, // Default to authorized for the example
+    // Injecting the Config object
+    singletons: [Injector<Config>(() => Config("Modular Router Demo", "v2.0.0"))],
+  );
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Modular Router Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple), useMaterial3: true),
       // Integrate ModularRouter
       onGenerateRoute: router.onGenerateRoute,
       initialRoute: '/',
@@ -75,35 +84,23 @@ class _CounterPageState extends StateController<CounterPage, CounterController> 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Modular Router Counter'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
+      appBar: AppBar(title: const Text('Modular Router Counter'), backgroundColor: Theme.of(context).colorScheme.inversePrimary),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text('You have pushed the button this many times:'),
-            Text(
-              '${controller.count}',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+            Text('${controller.count}', style: Theme.of(context).textTheme.headlineMedium),
             const SizedBox(height: 32),
             ElevatedButton.icon(
-              onPressed: () => Navigator.of(context).pushTo<SettingsPage>(
-                arguments: 'Flutter Enthusiast',
-              ),
+              onPressed: () => Navigator.of(context).pushTo<SettingsPage>(arguments: 'Flutter Enthusiast'),
               icon: const Icon(Icons.settings),
               label: const Text('Go to Settings'),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: controller.increment,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: FloatingActionButton(onPressed: controller.increment, tooltip: 'Increment', child: const Icon(Icons.add)),
     );
   }
 }
@@ -119,28 +116,18 @@ class _SettingsPageState extends StateController<SettingsPage, SettingsControlle
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-      ),
+      appBar: AppBar(title: const Text('Settings')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'App Name: ${controller.config.appName}',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            Text('App Name: ${controller.config.appName}', style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 8),
-            Text(
-              'Version: ${controller.config.version}',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
+            Text('Version: ${controller.config.version}', style: Theme.of(context).textTheme.bodyMedium),
             Text(
               'User Nickname: ${controller.nickname}',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.primary),
             ),
             const Divider(height: 32),
             const Text(
@@ -149,10 +136,7 @@ class _SettingsPageState extends StateController<SettingsPage, SettingsControlle
             const Spacer(),
             SizedBox(
               width: double.infinity,
-              child: OutlinedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Back to Home'),
-              ),
+              child: OutlinedButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Back to Home')),
             ),
           ],
         ),
@@ -168,28 +152,9 @@ class MainModule extends Module {
 
   @override
   List<ModuleRoute> get routes => [
-        ModuleRoute<CounterPage>(
-          path: '/',
-          viewBuilder: CounterPage.new,
-          controllerBuilder: CounterController.new,
-        ),
-        ModuleRoute<SettingsPage>(
-          path: '/settings',
-          viewBuilder: SettingsPage.new,
-          controllerBuilder: SettingsController.new,
-        ),
-      ];
+    ModuleRoute<CounterPage>(path: '/', viewBuilder: CounterPage.new, controllerBuilder: CounterController.new),
+    ModuleRoute<SettingsPage>(path: '/settings', viewBuilder: SettingsPage.new, controllerBuilder: SettingsController.new),
+  ];
 }
 
 // --- Router Initialization ---
-
-final router = ModularRouter(
-  modules: [
-    MainModule(),
-  ],
-  authorized: true, // Default to authorized for the example
-  // Injecting the Config object
-  singletons: [
-    Injector<Config>(() => Config("Modular Router Demo", "v2.0.0")),
-  ],
-);

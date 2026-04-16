@@ -35,6 +35,12 @@ class ModularRouter {
   final _injector = AutoInjector();
   late final RoutingMap _routingMap;
 
+  final List<Injector>? _factories;
+  final List<Injector>? _lazySingletons;
+  final List<Injector>? _singletons;
+
+  final List<Injector> _injections;
+
   ModularRouter({
     required List<Module> modules,
     List<Injector>? factories,
@@ -46,27 +52,36 @@ class ModularRouter {
   }) : _unauthorizedRedirectRoute = unauthorizedRedirectRoute,
        _authorized = authorized,
        _enableAuthorize = enableAuthorize,
-       _modules = modules {
+       _modules = modules,
+       _factories = factories,
+       _lazySingletons = lazySingletons,
+       _singletons = singletons,
+       _injections = List<Injector>.from(factories ?? <Injector>[])
+         ..addAll(lazySingletons ?? <Injector>[])
+         ..addAll(singletons ?? <Injector>[]) {
     _routingMap = _buildRoutingMap();
     _instance = this;
 
-    _registerInjectors(factories, lazySingletons, singletons);
+    _registerInjectors();
     _injector.commit();
   }
 
   static RoutingMap get routingMap => instance._routingMap;
 
-  void _registerInjectors(List<Injector>? factories, List<Injector>? lazySingletons, List<Injector>? singletons) {
-    for (var factory in factories ?? <Injector>[]) {
-      _injector.add(factory.constructor, key: factory.injectedType.toString());
+  void _registerInjectors() {
+    for (var factory in _factories ?? <Injector>[]) {
+      factory.register(_injector.add);
+      //_injector.add(factory.constructor /* , key: factory.injectedType.toString() */);
     }
 
-    for (var lazySingleton in lazySingletons ?? <Injector>[]) {
-      _injector.addLazySingleton(lazySingleton.constructor, key: lazySingleton.injectedType.toString());
+    for (var lazySingleton in _lazySingletons ?? <Injector>[]) {
+      lazySingleton.register(_injector.addLazySingleton);
+      //_injector.addLazySingleton(lazySingleton.constructor, key: lazySingleton.injectedType.toString());
     }
 
-    for (var singleton in singletons ?? <Injector>[]) {
-      _injector.addSingleton(singleton.constructor, key: singleton.injectedType.toString());
+    for (var singleton in _singletons ?? <Injector>[]) {
+      singleton.register(_injector.addSingleton);
+      //_injector.addSingleton(singleton.constructor, key: singleton.injectedType.toString());
     }
   }
 
@@ -145,16 +160,16 @@ class ModularRouter {
   }
 
   PageRoute<T> _pageRouter<T>(ModuleRoute route, RouteSettings? routeSettings) {
-    final arguments = routeSettings?.arguments is List 
-      ? List<dynamic>.from(routeSettings?.arguments as List) 
-      : [routeSettings?.arguments];
+    final arguments = routeSettings?.arguments is List ? List<dynamic>.from(routeSettings?.arguments as List) : [routeSettings?.arguments];
 
     final controllerSignature = _parseSignature(route.controllerBuilder);
 
     // Prepare arguments for controller
     final positionalArgTypes = _splitTypes(controllerSignature.positional ?? '');
-    final positionalArgs = positionalArgTypes.map((e) {
-      final fromInjector = _injector.tryGet(key: e);
+    final positionalArgs = positionalArgTypes.map((className) {
+      final injector = _injections.firstWhereOrNull((injector) => injector.injectedType.toString() == className);
+      final fromInjector = injector?.get(_injector.get);
+
       if (fromInjector != null) return fromInjector;
       if (arguments.isNotEmpty) return arguments.removeAt(0);
       return null;
@@ -166,9 +181,11 @@ class ModularRouter {
       final typeRegex = RegExp(r'\b(?!(?:required)\b)([A-Z][a-zA-Z0-9_]*)');
       final params = controllerSignature.named!.split(',');
       for (final p in params) {
-        final type = typeRegex.firstMatch(p)?.group(0);
+        final className = typeRegex.firstMatch(p)?.group(0);
         final name = p.trim().split(' ').last.trim();
-        final value = _injector.tryGet(key: type);
+        final injector = _injections.firstWhere((injector) => injector.injectedType.toString() == className);
+        final value = injector.get(_injector.get);
+
         namedArgs[name] = value;
       }
     }
@@ -188,7 +205,7 @@ class ModularRouter {
 
     final viewSignature = _parseSignature(route.viewBuilder);
     final viewParams = [];
-    
+
     // Add positional controller if expected
     if (viewSignature.positional != null || (viewSignature.positional == null && viewSignature.named == null)) {
       if (controller != null) viewParams.add(controller);

@@ -1,6 +1,6 @@
 name: modular_router
 description: "A flutter package to manage routes"
-version: 2.0.0
+version: 2.0.2
 homepage: https://github.com/TercyoStorck/modular_router
 environment:
   sdk: ^3.10.0
