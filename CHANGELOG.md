@@ -1,3 +1,6 @@
+## [2.0.3] (Apr 16, 2026)
+- Updated README with license information.
+
 ## [2.0.2] (Apr 16, 2026)
 - Changed license to GNU GPL v3.
 
